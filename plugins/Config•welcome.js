@@ -1,13 +1,11 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
-import { Goodbye } from 'discord-canvas';
 import fetch from 'node-fetch';
+import canvafy from 'canvafy';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
 
   let chat = global.db.data.chats[m.chat];
-  let wel = 'ＷＥＬＣＯＭＥ － ＵＳＥＲ';
-  let bye = 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ';
   let web = 'https://genesis-support.vercel.app/';
   let webb = 'https://izumikzx.vercel.app/';
   let who = m.messageStubParameters[0] + '@s.whatsapp.net';
@@ -24,59 +22,52 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   const generateImage = async (title, description) => {
     const userAvatar = await getUserAvatar();
-
-    // Generar la imagen de despedida o bienvenida con discord-canvas
-    const image = await new Goodbye()
-      .setUsername(userName)
-      .setDiscriminator("0001")  // Puedes personalizar el discriminador si lo necesitas
-      .setMemberCount(participants.length)
-      .setGuildName(groupMetadata.subject.trim())
+    const img = await new canvafy.WelcomeLeave()
       .setAvatar(userAvatar)
-      .setColor("border", "#8015EA")
-      .setColor("username-box", "#8015EA")
-      .setColor("discriminator-box", "#8015EA")
-      .setColor("message-box", "#8015EA")
-      .setColor("title", "#8015EA")
-      .setColor("avatar", "#8015EA")
-      .setBackground('https://i.ibb.co/JF8CTJJ/kaytbotperfil.jpg')  // Fondo personalizado
-      .toAttachment();  // Genera la imagen como un archivo adjunto
+      .setBackground(
+        'image',
+        'https://i.ibb.co/0cfqJLt/file.jpg'
+      )
+      .setTitle(title)
+      .setDescription(description)
+      .setBorder('#2a2e35')
+      .setAvatarBorder('#2a2e35')
+      .setOverlayOpacity(0.3)
+      .build();
 
-    return image;
+    return img;
   };
 
   if (chat.welcome && m.messageStubType == 27) {
-    let bienvenida = `❀ *Se unió* al grupo *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]} \n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Bienvenido! ¡Esperamos que tengas un excelente día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 ¡Disfruta de tu tiempo con nosotros!`;
+    let bienvenida = `❀ *Se unió* al grupo *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]} \n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Bienvenido! ¡Esperamos que tengas un excelente día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 ¡Disfruta de tu tiempo con nosotros!`;
 
     let img = await generateImage(
       '¡BIENVENIDO!',
       `¡Hola Bienvenido al grupo!`
     );
 
-    // Enviar la imagen como adjunto
-    await conn.sendMini(m.chat, 'ＷＥＬＣＯＭＥ － ＵＳＥＲ', dev, bienvenida, img, img, web, null);
+    await conn.sendAi(m.chat, botname, dev, bienvenida, img, img, web, null);
   }
 
   if (chat.welcome && m.messageStubType == 28) {
-    let bye = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
+    let bye = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Próximamente...`;
 
     let img = await generateImage(
       '¡ADIOS!',
       `¡Hasta pronto Usuario!`
     );
 
-    // Enviar la imagen como adjunto
-    await conn.sendMini(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, bye, img, img, webb, null);
+    await conn.sendAi(m.chat, botname, dev, bye, img, img, webb, null);
   }
 
   if (chat.welcome && m.messageStubType == 32) {
-    let kick = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
+    let kick = `❀ *Fue expulsado* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Próximamente...`;
 
     let img = await generateImage(
-      '¡ADIOS!',
-      `¡Hasta pronto Usuario!`
+      'EXPULSADO',
+      `¡fue expulsado del grupo.!`
     );
 
-    // Enviar la imagen como adjunto
-    await conn.sendMini(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, kick, img, img, web, null);
+    await conn.sendAi(m.chat, botname, dev, kick, img, img, web, null);
   }
 }
