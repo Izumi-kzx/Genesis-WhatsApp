@@ -1,72 +1,41 @@
 import fetch from 'node-fetch';
 
-let handler = async (m, { conn, text }) => {
-    if (!text) return conn.reply(m.chat, `🍟 Ingresa un link de MediaFire.`, m);
+let handler = async (m, { conn, args, usedPrefix, command }) => {
+    if (!args[0]) return conn.reply(m.chat, '🚩 Ingresa el enlace de un archivo de MediaFire.', m);
+    if (!args[0].match(/mediafire/gi)) return conn.reply(m.chat, 'El enlace debe ser de un archivo de MediaFire.', m);
     await m.react('🕓');
 
     try {
-        let api = await fetch(`https://api.agungny.my.id/api/mediafire?url=${encodeURIComponent(text)}`);
+        // Obtener detalles del enlace MediaFire usando la API
+        let api = await fetch(`https://api.agungny.my.id/api/mediafire?url=${encodeURIComponent(args[0])}`);
         let json = await api.json();
+
         if (json.status !== "true") return m.reply('❌ Error al obtener los detalles del enlace, por favor intenta nuevamente.');
 
-        let { title, link, filename, size, repair } = json.result;
-        let caption = `*「✐」${title || filename}*\n\n` +
-                      `> ❒ Tamaño » *${size || 'Desconocido'}*\n` +
-                      `> 🔗 [Descargar](${link})\n` +
-                      `> 🔄 Reparar » [Aquí](${repair})\n` +
-                      `> 🌐 Enlace de descarga: [Click aquí](${link})`;
+        let { title, url, size } = json.result;
+        let txt = `乂  *M E D I A F I R E  -  D O W N L O A D*\n\n`;
+        txt += `        ✩  *Nombre* : ${title || 'Sin título'}\n`;
+        txt += `        ✩  *Peso* : ${size || 'Desconocido'}\n\n`;
+        txt += `*- ↻ El archivo se está enviando, espera un momento. . .*`;
 
-        // Descargar el archivo desde el enlace proporcionado
-        let file = await fetch(link);
-        let buffer = await file.buffer();
+        // Enviar imagen de portada (puedes cambiar esta imagen si lo prefieres)
+        let img = await (await fetch('https://i.ibb.co/wLQFn7q/logo-mediafire.jpg')).buffer();
+        await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m);
 
-        // Enviar el archivo con el caption
-        await conn.sendFile(m.chat, buffer, filename || 'file', caption, m, null, { asDocument: true });
+        // Enviar archivo usando la URL obtenida
+        await conn.sendFile(m.chat, url, title, null, m, null, { mimetype: 'application/octet-stream', asDocument: true });
 
         await m.react('✅');
     } catch (error) {
         console.error(error);
+        m.react('✖️');
         m.reply('❌ Ocurrió un error al procesar la solicitud.');
     }
-}
+};
 
-handler.help = ['mediafire *<url>*'];
-handler.tags = ['dl'];
-handler.command = ['mediafire'];
+handler.help = ['mediafire'].map(v => v + ' *<url>*');
+handler.tags = ['downloader', 'premium'];
+handler.command = ['mediafire', 'mdfire', 'mf'];
+handler.premium = true;
 
 export default handler;
-
-
-
-
-
-
-/* import fetch from 'node-fetch';
-
-let handler = async (m, { conn, text }) => {
-    if (!text) return conn.reply(m.chat, `🍟 Ingresa un link de MediaFire.`, m);
-    await m.react('🕓');
-
-    try {
-        let api = await fetch(`https://api.agungny.my.id/api/mediafire?url=${encodeURIComponent(text)}`);
-        let json = await api.json();
-        if (json.status !== "true") return m.reply('❌ Error al obtener los detalles del enlace, por favor intenta nuevamente.');
-
-        let { fileName, downloadLink, fileSize } = json.result;
-        let caption = `*「✐」${fileName}*\n\n> ❒ Tamaño » *${fileSize || 'Desconocido'}*\n> 🔗 [Descargar](${downloadLink})`;
-
-        // Enviar el archivo con el caption
-        await conn.sendFile(m.chat, downloadLink, fileName, caption, m, null, { asDocument: true });
-
-        await m.react('✅');
-    } catch (error) {
-        console.error(error);
-        m.reply('❌ Ocurrió un error al procesar la solicitud.');
-    }
-}
-
-handler.help = ['mediafire *<url>*'];
-handler.tags = ['dl'];
-handler.command = ['mediafire'];
-
-export default handler; */
