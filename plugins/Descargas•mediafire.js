@@ -16,8 +16,12 @@ let handler = async (m, { conn, text }) => {
                       `> 🔄 Reparar » [Aquí](${repair})\n` +
                       `> 🌐 Enlace de descarga: [Click aquí](${link})`;
 
+        // Descargar el archivo desde el enlace proporcionado
+        let file = await fetch(link);
+        let buffer = await file.buffer();
+
         // Enviar el archivo con el caption
-        await conn.sendFile(m.chat, link, filename, caption, m, null, { asDocument: true });
+        await conn.sendFile(m.chat, buffer, filename || 'file', caption, m, null, { asDocument: true });
 
         await m.react('✅');
     } catch (error) {
@@ -31,7 +35,6 @@ handler.tags = ['dl'];
 handler.command = ['mediafire'];
 
 export default handler;
-
 
 
 
