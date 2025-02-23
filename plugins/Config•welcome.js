@@ -1,6 +1,7 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
-import { Canvas } from 'discord-canvas';
+import pkg from 'discord-canvas';
+const { Canvas } = pkg;
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
