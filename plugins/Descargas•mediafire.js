@@ -25,6 +25,6 @@ let handler = async (m, { conn, args, usedPrefix, command }) => {
     conn.reply(m.chat, '❌ Hubo un error al procesar la solicitud.', m)
   }
 }
-handler.command = ['soundcloudsearch']
+handler.command = ['soundcloudsearchv2']
 
 export default handler
