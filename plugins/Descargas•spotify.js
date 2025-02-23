@@ -30,7 +30,9 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
       await conn.sendMessage(
         m.chat,
         {
-          text: `🔗 *Enlace de descarga:* ${downloadLink}`
+          audio: { url: downloadLink },
+          fileName: `${title}.mp3`,
+          mimetype: 'audio/mpeg'
         },
         { quoted: m }
       );
