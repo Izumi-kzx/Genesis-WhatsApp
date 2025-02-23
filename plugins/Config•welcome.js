@@ -1,13 +1,14 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
-import canvafy from 'canvafy';
+import { Canvas } from 'discord-canvas';
+import { MessageAttachment } from 'discord.js';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
 
   let chat = global.db.data.chats[m.chat];
-  let wel = 'ＷＥＬＣＯＭＥ － ＵＳＥＲ'
-  let bye = 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ'
+  let wel = 'ＷＥＬＣＯＭＥ － ＵＳＥＲ';
+  let bye = 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ';
   let web = 'https://genesis-support.vercel.app/';
   let webb = 'https://izumikzx.vercel.app/';
   let who = m.messageStubParameters[0] + '@s.whatsapp.net';
@@ -22,22 +23,25 @@ export async function before(m, { conn, participants, groupMetadata }) {
     }
   };
 
-  const generateImage = async (title, description) => {
+  const generateImage = async (title, description, background) => {
     const userAvatar = await getUserAvatar();
-    const img = await new canvafy.WelcomeLeave()
-      .setAvatar(userAvatar)
-      .setBackground(
-        'image',
-        'https://i.ibb.co/0cfqJLt/file.jpg'
-      )
-      .setTitle(title)
-      .setDescription(description)
-      .setBorder('#2a2e35')
-      .setAvatarBorder('#2a2e35')
-      .setOverlayOpacity(0.3)
-      .build();
 
-    return img;
+    const image = await new Canvas.Goodbye()
+      .setUsername(userName)
+      .setDiscriminator('0001')
+      .setMemberCount(participants.length.toString())
+      .setGuildName(groupMetadata.subject.trim())
+      .setAvatar(userAvatar)
+      .setColor("border", "#2a2e35")
+      .setColor("username-box", "#2a2e35")
+      .setColor("discriminator-box", "#2a2e35")
+      .setColor("message-box", "#2a2e35")
+      .setColor("title", "#2a2e35")
+      .setColor("avatar", "#2a2e35")
+      .setBackground(background)
+      .toAttachment();
+
+    return image;
   };
 
   if (chat.welcome && m.messageStubType == 27) {
@@ -45,31 +49,37 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       '¡BIENVENIDO!',
-      `¡Hola Bienvenido al grupo!`
+      `¡Hola Bienvenido al grupo!`,
+      'https://i.ibb.co/0cfqJLt/file.jpg'
     );
 
-    await conn.sendFile(m.chat, img, 'thumbnail.jpg', bienvenida, m, null, web);
+    const attachment = new MessageAttachment(img.toBuffer(), 'goodbye-image.png');
+    await conn.sendFile(m.chat, attachment, 'thumbnail.jpg', bienvenida, m, null, web);
   }
 
   if (chat.welcome && m.messageStubType == 28) {
-    let bye = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
+    let byeMessage = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
 
     let img = await generateImage(
       '¡ADIOS!',
-      `¡Hasta pronto Usuario!`
+      `¡Hasta pronto Usuario!`,
+      'https://i.ibb.co/cFzgdNw/file.jpg'
     );
 
-    await conn.sendFile(m.chat, img, 'thumbnail.jpg', bye, m, null, webb);
+    const attachment = new MessageAttachment(img.toBuffer(), 'goodbye-image.png');
+    await conn.sendFile(m.chat, attachment, 'thumbnail.jpg', byeMessage, m, null, webb);
   }
 
   if (chat.welcome && m.messageStubType == 32) {
-    let kick = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
+    let kickMessage = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
 
     let img = await generateImage(
       '¡ADIOS!',
-      `¡Hasta pronto Usuario!`
+      `¡Hasta pronto Usuario!`,
+      'https://i.ibb.co/cFzgdNw/file.jpg'
     );
 
-    await conn.sendFile(m.chat, img, 'thumbnail.jpg', kick, m, null, web);
+    const attachment = new MessageAttachment(img.toBuffer(), 'goodbye-image.png');
+    await conn.sendFile(m.chat, attachment, 'thumbnail.jpg', kickMessage, m, null, web);
   }
 }
