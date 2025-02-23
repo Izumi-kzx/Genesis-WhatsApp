@@ -48,7 +48,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hola Bienvenido al grupo!`
     );
 
-    await conn.sendMini(m.chat, 'ＷＥＬＣＯＭＥ － ＵＳＥＲ', dev, bienvenida, img, img, web, null);
+    await conn.sendFile(m.chat, img, 'thumbnail.jpg', bienvenida, m, null, web);
   }
 
   if (chat.welcome && m.messageStubType == 28) {
@@ -59,7 +59,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hasta pronto Usuario!`
     );
 
-    await conn.sendMini(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, bye, img, img, webb, null);
+    await conn.sendFile(m.chat, img, 'thumbnail.jpg', bye, m, null, webb);
   }
 
   if (chat.welcome && m.messageStubType == 32) {
@@ -70,6 +70,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hasta pronto Usuario!`
     );
 
-    await conn.sendMini(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, kick, img, img, web, null);
+    await conn.sendFile(m.chat, img, 'thumbnail.jpg', kick, m, null, web);
   }
 }
