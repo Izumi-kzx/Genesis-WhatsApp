@@ -1,13 +1,13 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
-import { Canvas } from 'discord-canvas';
+import discordCanvasSpanish from 'https://cdn.skypack.dev/discord-canvas-spanish';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
 
   let chat = global.db.data.chats[m.chat];
-  let wel = 'ＷＥＬＣＯＭＥ － ＵＳＥＲ'
-  let bye = 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ'
+  let wel = 'ＷＥＬＣＯＭＥ － ＵＳＥＲ';
+  let bye = 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ';
   let web = 'https://genesis-support.vercel.app/';
   let webb = 'https://izumikzx.vercel.app/';
   let who = m.messageStubParameters[0] + '@s.whatsapp.net';
@@ -25,8 +25,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
   const generateImage = async (title, description) => {
     const userAvatar = await getUserAvatar();
 
-    // Generar la imagen con discord-canvas
-    const image = await new Canvas.Goodbye()
+    // Generar la imagen con discord-canvas-spanish
+    const image = await new discordCanvasSpanish.Goodbye()
       .setUsername(userName)
       .setDiscriminator("0001")  // Puedes personalizar el discriminador si lo necesitas
       .setMemberCount(participants.length)
@@ -38,7 +38,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       .setColor("message-box", "#8015EA")
       .setColor("title", "#8015EA")
       .setColor("avatar", "#8015EA")
-      .setBackground('https://i.ibb.co/0cfqJLt/file.jpg')  // Fondo personalizado
+      .setBackground('https://i.ibb.co/JF8CTJJ/kaytbotperfil.jpg')  // Fondo personalizado
       .toAttachment();  // Genera la imagen como un archivo adjunto
 
     return image;
