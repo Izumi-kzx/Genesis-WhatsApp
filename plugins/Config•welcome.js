@@ -1,6 +1,6 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
-import canvas from 'discord-canvas';
+import { Canvas } from 'discord-canvas';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
@@ -24,9 +24,11 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   const generateImage = async (title, description) => {
     const userAvatar = await getUserAvatar();
-    const img = await new canvas.Goodbye()
+
+    // Generar la imagen con discord-canvas
+    const image = await new Canvas.Goodbye()
       .setUsername(userName)
-      .setDiscriminator("0001")  // Puedes ajustar el discriminador si lo deseas
+      .setDiscriminator("0001")  // Puedes personalizar el discriminador si lo necesitas
       .setMemberCount(participants.length)
       .setGuildName(groupMetadata.subject.trim())
       .setAvatar(userAvatar)
@@ -37,9 +39,9 @@ export async function before(m, { conn, participants, groupMetadata }) {
       .setColor("title", "#8015EA")
       .setColor("avatar", "#8015EA")
       .setBackground('https://i.ibb.co/0cfqJLt/file.jpg')  // Fondo personalizado
-      .toAttachment();
+      .toAttachment();  // Genera la imagen como un archivo adjunto
 
-    return img;
+    return image;
   };
 
   if (chat.welcome && m.messageStubType == 27) {
@@ -50,6 +52,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hola Bienvenido al grupo!`
     );
 
+    // Enviar la imagen como adjunto
     await conn.sendMini(m.chat, 'ＷＥＬＣＯＭＥ － ＵＳＥＲ', dev, bienvenida, img, img, web, null);
   }
 
@@ -61,6 +64,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hasta pronto Usuario!`
     );
 
+    // Enviar la imagen como adjunto
     await conn.sendMini(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, bye, img, img, webb, null);
   }
 
@@ -72,6 +76,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hasta pronto Usuario!`
     );
 
+    // Enviar la imagen como adjunto
     await conn.sendMini(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, kick, img, img, web, null);
   }
 }
