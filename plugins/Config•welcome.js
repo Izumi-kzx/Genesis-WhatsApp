@@ -11,6 +11,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   let who = m.messageStubParameters[0] + '@s.whatsapp.net';
   let user = global.db.data.users[who];
   let userName = user ? user.name : await conn.getName(who);
+  userName = userName || "Miembro nuevo"; // Evitar valores undefined o null
 
   const getUserAvatar = async () => {
     try {
@@ -32,6 +33,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
       subtitle_fontSize: 50,
       footer_fontSize: 30
     };
+
+    subtitle = subtitle || "Miembro nuevo"; // Asegurar un valor válido
 
     return await welcomeImage(bg, userAvatar, title, subtitle, footer, color, options);
   };
