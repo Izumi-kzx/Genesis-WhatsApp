@@ -1,6 +1,7 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
+import { Goodbye } from 'discord-canvas';
+import { MessageAttachment } from 'discord.js';
 import fetch from 'node-fetch';
-import discordCanvasSpanish from 'https://cdn.skypack.dev/discord-canvas-spanish';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
@@ -25,8 +26,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
   const generateImage = async (title, description) => {
     const userAvatar = await getUserAvatar();
 
-    // Generar la imagen con discord-canvas-spanish
-    const image = await new discordCanvasSpanish.Goodbye()
+    // Generar la imagen de despedida o bienvenida con discord-canvas
+    const image = await new Goodbye()
       .setUsername(userName)
       .setDiscriminator("0001")  // Puedes personalizar el discriminador si lo necesitas
       .setMemberCount(participants.length)
