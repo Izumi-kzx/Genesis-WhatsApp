@@ -1,6 +1,6 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
-import canvafy from 'canvafy';
+import canvas from 'discord-canvas';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
@@ -24,18 +24,20 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   const generateImage = async (title, description) => {
     const userAvatar = await getUserAvatar();
-    const img = await new canvafy.WelcomeLeave()
+    const img = await new canvas.Goodbye()
+      .setUsername(userName)
+      .setDiscriminator("0001")  // Puedes ajustar el discriminador si lo deseas
+      .setMemberCount(participants.length)
+      .setGuildName(groupMetadata.subject.trim())
       .setAvatar(userAvatar)
-      .setBackground(
-        'image',
-        'https://i.ibb.co/0cfqJLt/file.jpg'
-      )
-      .setTitle(title)
-      .setDescription(description)
-      .setBorder('#2a2e35')
-      .setAvatarBorder('#2a2e35')
-      .setOverlayOpacity(0.3)
-      .build();
+      .setColor("border", "#8015EA")
+      .setColor("username-box", "#8015EA")
+      .setColor("discriminator-box", "#8015EA")
+      .setColor("message-box", "#8015EA")
+      .setColor("title", "#8015EA")
+      .setColor("avatar", "#8015EA")
+      .setBackground('https://i.ibb.co/0cfqJLt/file.jpg')  // Fondo personalizado
+      .toAttachment();
 
     return img;
   };
