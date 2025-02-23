@@ -23,19 +23,23 @@ let handler = async (m, { conn, command, text, usedPrefix }) => {
     if (result.success) {
       const { title, thumbnail, downloadLink } = result;
 
-      const mensaje = `🎵 *Título:* ${title}`;
+      const doc = {
+        audio: { url: downloadLink },
+        mimetype: 'audio/mpeg',
+        fileName: `${title}.mp3`,
+        contextInfo: {
+          externalAdReply: {
+            showAdAttribution: true,
+            mediaType: 2,
+            mediaUrl: null,
+            title: title,
+            sourceUrl: null,
+            thumbnail: await (await conn.getFile(thumbnail)).data
+          }
+        }
+      };
 
-      await conn.sendFile(m.chat, thumbnail, 'cover.jpg', mensaje, m);
-
-      await conn.sendMessage(
-        m.chat,
-        {
-          audio: { url: downloadLink },
-          fileName: `${title}.mp3`,
-          mimetype: 'audio/mpeg'
-        },
-        { quoted: m }
-      );
+      await conn.sendMessage(m.chat, doc, { quoted: m });
 
       await m.react('✅');
     } else {
