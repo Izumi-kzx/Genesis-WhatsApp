@@ -45,6 +45,7 @@
 "awesome-phonenumber": "^3.4.0",
 "ruhend-scraper": "^7.0.4",
 "google-play-scraper": "10.0.1",
+"bing-translate-api": "^4.0.2",
 "gradient-string": "^2.0.2",
 "google-libphonenumber": "3.2.38",
 "axios": "^1.1.2",
