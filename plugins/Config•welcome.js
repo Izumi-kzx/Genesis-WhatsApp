@@ -1,6 +1,5 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import { Goodbye } from 'discord-canvas';
-import { MessageAttachment } from 'discord.js';
 import fetch from 'node-fetch';
 
 export async function before(m, { conn, participants, groupMetadata }) {
