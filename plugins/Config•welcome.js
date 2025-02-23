@@ -1,7 +1,7 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
 import pkg from 'discord-canvas';
-const { Canvas } = pkg;
+const { Canvas } = pkg;  // Asegurándonos de acceder correctamente al módulo
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
@@ -26,7 +26,12 @@ export async function before(m, { conn, participants, groupMetadata }) {
   const generateImage = async (title, description, background) => {
     const userAvatar = await getUserAvatar();
 
-    const image = await new Canvas.Leave()  // Usamos Leave en vez de Goodbye
+    // Revisar las clases disponibles en discord-canvas
+    console.log(Object.keys(Canvas));  // Esto debería imprimir las clases disponibles, como 'Welcome' o 'Leave'
+
+    // Cambiar 'Leave' por la clase correcta disponible en la librería.
+    // Ejemplo con 'Welcome' si 'Leave' no es válida.
+    const image = await new Canvas.Welcome()  // Cambiar a la clase correcta
       .setUsername(userName)
       .setDiscriminator('0001')
       .setMemberCount(participants.length.toString())
