@@ -1,7 +1,6 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
 import { Canvas } from 'discord-canvas';
-import { MessageAttachment } from 'discord.js';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
@@ -53,8 +52,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       'https://i.ibb.co/0cfqJLt/file.jpg'
     );
 
-    const attachment = new MessageAttachment(img.toBuffer(), 'goodbye-image.png');
-    await conn.sendFile(m.chat, attachment, 'thumbnail.jpg', bienvenida, m, null, web);
+    await conn.sendFile(m.chat, img, 'thumbnail.jpg', bienvenida, m, null, web);
   }
 
   if (chat.welcome && m.messageStubType == 28) {
@@ -66,8 +64,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       'https://i.ibb.co/cFzgdNw/file.jpg'
     );
 
-    const attachment = new MessageAttachment(img.toBuffer(), 'goodbye-image.png');
-    await conn.sendFile(m.chat, attachment, 'thumbnail.jpg', byeMessage, m, null, webb);
+    await conn.sendFile(m.chat, img, 'thumbnail.jpg', byeMessage, m, null, webb);
   }
 
   if (chat.welcome && m.messageStubType == 32) {
@@ -79,7 +76,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
       'https://i.ibb.co/cFzgdNw/file.jpg'
     );
 
-    const attachment = new MessageAttachment(img.toBuffer(), 'goodbye-image.png');
-    await conn.sendFile(m.chat, attachment, 'thumbnail.jpg', kickMessage, m, null, web);
+    await conn.sendFile(m.chat, img, 'thumbnail.jpg', kickMessage, m, null, web);
   }
 }
