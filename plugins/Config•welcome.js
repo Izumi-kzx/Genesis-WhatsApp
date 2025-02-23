@@ -1,5 +1,6 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
+import Canvas from 'discord-canvas';
 import canvafy from 'canvafy';
 
 export async function before(m, { conn, participants, groupMetadata }) {
