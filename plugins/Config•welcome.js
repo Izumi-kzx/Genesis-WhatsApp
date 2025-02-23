@@ -26,7 +26,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   const generateImage = async (title, description, background) => {
     const userAvatar = await getUserAvatar();
 
-    const image = await new Canvas.Goodbye()
+    const image = await new Canvas.Leave()  // Usamos Leave en vez de Goodbye
       .setUsername(userName)
       .setDiscriminator('0001')
       .setMemberCount(participants.length.toString())
