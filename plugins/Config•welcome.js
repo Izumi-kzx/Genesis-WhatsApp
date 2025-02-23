@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import { welcomeImage } from 'ultrax';
 
 export async function before(m, { conn, participants, groupMetadata }) {
-  if (!m.messageStubType || !m.isGroup) return !0;
+  if (!m.messageStubType || !m.isGroup || !m.messageStubParameters?.[0]) return !0;
 
   let chat = global.db.data.chats[m.chat];
   let web = 'https://genesis-support.vercel.app/';
@@ -36,27 +36,40 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     subtitle = subtitle || "Miembro nuevo"; // Asegurar un valor válido
 
-    return await welcomeImage(bg, userAvatar, title, subtitle, footer, color, options);
+    try {
+      let img = await welcomeImage(bg, userAvatar, title, subtitle, footer, color, options);
+      if (!img || img.length === 0) throw new Error("Imagen no generada correctamente.");
+      return img;
+    } catch (error) {
+      console.error("Error generando la imagen:", error);
+      return null;
+    }
   };
 
   if (chat.welcome && m.messageStubType == 27) {
-    let bienvenida = `❀ *Se unió* al grupo *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]} \n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Bienvenido! ¡Esperamos que tengas un excelente día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 ¡Disfruta de tu tiempo con nosotros!`;
+    let bienvenida = `❀ *Se unió* al grupo *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]} \n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Bienvenido! ¡Esperamos que tengas un excelente día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 ¡Disfruta de tu tiempo con nosotros!`;
 
     let img = await generateImage('¡BIENVENIDO!', userName);
-    await conn.sendMessage(m.chat, { image: img, caption: bienvenida });
+    if (img) {
+      await conn.sendMessage(m.chat, { image: img, caption: bienvenida }).catch(console.error);
+    }
   }
 
   if (chat.welcome && m.messageStubType == 28) {
-    let bye = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Próximamente...`;
+    let bye = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Próximamente...`;
 
     let img = await generateImage('¡ADIOS!', userName);
-    await conn.sendMessage(m.chat, { image: img, caption: bye });
+    if (img) {
+      await conn.sendMessage(m.chat, { image: img, caption: bye }).catch(console.error);
+    }
   }
 
   if (chat.welcome && m.messageStubType == 32) {
-    let kick = `❀ *Fue expulsado* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Próximamente...`;
+    let kick = `❀ *Fue expulsado* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Próximamente...`;
 
     let img = await generateImage('EXPULSADO', userName);
-    await conn.sendMessage(m.chat, { image: img, caption: kick });
+    if (img) {
+      await conn.sendMessage(m.chat, { image: img, caption: kick }).catch(console.error);
+    }
   }
 }
