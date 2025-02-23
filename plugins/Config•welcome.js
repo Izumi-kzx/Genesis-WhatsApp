@@ -1,13 +1,13 @@
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
-const { Canvas } = require('discord-canvas');  // Cambiar la importación a CommonJS
+import canvafy from 'canvafy';
 
 export async function before(m, { conn, participants, groupMetadata }) {
   if (!m.messageStubType || !m.isGroup) return !0;
 
   let chat = global.db.data.chats[m.chat];
-  let wel = 'ＷＥＬＣＯＭＥ － ＵＳＥＲ';
-  let bye = 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ';
+  let wel = 'ＷＥＬＣＯＭＥ － ＵＳＥＲ'
+  let bye = 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ'
   let web = 'https://genesis-support.vercel.app/';
   let webb = 'https://izumikzx.vercel.app/';
   let who = m.messageStubParameters[0] + '@s.whatsapp.net';
@@ -22,26 +22,22 @@ export async function before(m, { conn, participants, groupMetadata }) {
     }
   };
 
-  const generateImage = async (title, description, background) => {
+  const generateImage = async (title, description) => {
     const userAvatar = await getUserAvatar();
-
-    // Usar la clase Welcome o Leave según lo disponible en discord-canvas
-    const image = await new Canvas.Welcome()  // Aquí puedes probar otras clases disponibles si Welcome no funciona
-      .setUsername(userName)
-      .setDiscriminator('0001')
-      .setMemberCount(participants.length.toString())
-      .setGuildName(groupMetadata.subject.trim())
+    const img = await new canvafy.WelcomeLeave()
       .setAvatar(userAvatar)
-      .setColor("border", "#2a2e35")
-      .setColor("username-box", "#2a2e35")
-      .setColor("discriminator-box", "#2a2e35")
-      .setColor("message-box", "#2a2e35")
-      .setColor("title", "#2a2e35")
-      .setColor("avatar", "#2a2e35")
-      .setBackground(background)
-      .toAttachment();
+      .setBackground(
+        'image',
+        'https://i.ibb.co/0cfqJLt/file.jpg'
+      )
+      .setTitle(title)
+      .setDescription(description)
+      .setBorder('#2a2e35')
+      .setAvatarBorder('#2a2e35')
+      .setOverlayOpacity(0.3)
+      .build();
 
-    return image;
+    return img;
   };
 
   if (chat.welcome && m.messageStubType == 27) {
@@ -49,34 +45,31 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       '¡BIENVENIDO!',
-      `¡Hola Bienvenido al grupo!`,
-      'https://i.ibb.co/0cfqJLt/file.jpg'
+      `¡Hola Bienvenido al grupo!`
     );
 
-    await conn.sendFile(m.chat, img, 'thumbnail.jpg', bienvenida, m, null, web);
+    await conn.sendAi(m.chat, 'ＷＥＬＣＯＭＥ － ＵＳＥＲ', dev, bienvenida, img, img, web, null);
   }
 
   if (chat.welcome && m.messageStubType == 28) {
-    let byeMessage = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
+    let bye = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
 
     let img = await generateImage(
       '¡ADIOS!',
-      `¡Hasta pronto Usuario!`,
-      'https://i.ibb.co/cFzgdNw/file.jpg'
+      `¡Hasta pronto Usuario!`
     );
 
-    await conn.sendFile(m.chat, img, 'thumbnail.jpg', byeMessage, m, null, webb);
+    await conn.sendAi(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, bye, img, img, webb, null);
   }
 
   if (chat.welcome && m.messageStubType == 32) {
-    let kickMessage = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
+    let kick = `❀ *Se salió* del grupo  *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]}\n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Nos vemos pronto! ¡Que tengas un buen día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 Adiós...`;
 
     let img = await generateImage(
       '¡ADIOS!',
-      `¡Hasta pronto Usuario!`,
-      'https://i.ibb.co/cFzgdNw/file.jpg'
+      `¡Hasta pronto Usuario!`
     );
 
-    await conn.sendFile(m.chat, img, 'thumbnail.jpg', kickMessage, m, null, web);
+    await conn.sendAi(m.chat, 'ＳＡＹＯＮＡＲＡ － ＵＳＥＲ', dev, kick, img, img, web, null);
   }
 }
