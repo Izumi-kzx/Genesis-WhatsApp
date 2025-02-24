@@ -38,7 +38,15 @@ export async function before(m, { conn, participants, groupMetadata }) {
     return img;
   };
 
-  const groupSize = participants.length;  // Obtén la cantidad de usuarios del grupo
+  // Actualiza la cantidad de participantes en función del tipo de acción
+  let groupSize = participants.length;
+  if (m.messageStubType === 27) {
+    // Si alguien se une, aumentamos el contador
+    groupSize++;
+  } else if (m.messageStubType === 28 || m.messageStubType === 32) {
+    // Si alguien se sale o es expulsado, disminuimos el contador
+    groupSize--;
+  }
 
   if (chat.welcome && m.messageStubType == 27) {
     let bienvenida = `❀ *Se unió* al grupo *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]} \n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Bienvenido! ¡Esperamos que tengas un excelente día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 ¡Disfruta de tu tiempo con nosotros!`;
