@@ -20,9 +20,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
     }  
   };  
 
-const generateImage = async (title, description) => { 
+const generateImage = async (title, description, userAvatar) => { 
   const bg = 'https://imgur.com/okIR1iY.png';    
-  const avatar = userAvatar;    
   const subtitle = member.user.tag;    
   const footer = `You're the th member`;    
   const color = '#ffffff';    
