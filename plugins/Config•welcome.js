@@ -31,7 +31,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       .setTitle(title)
       .setDescription(description)
       .setBorder('#2a2e35')
-      .setAvatarBorder('transparent')
+      .setAvatarBorder('#0000')
       .setOverlayOpacity(0.1)
       .build();
 
