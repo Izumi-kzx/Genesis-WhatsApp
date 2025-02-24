@@ -21,20 +21,20 @@ export async function before(m, { conn, participants, groupMetadata }) {
     }  
   };  
 
-const generateImage = async (title, description, userAvatar, subtitle) => { 
-  const bg = 'https://imgur.com/okIR1iY.png';    
-  const footer = `You're the th member`;    
-  const color = '#ffffff';    
-  const options = {    
-    font: "sans-serif",    
-    attachmentName: `welcome-${who}`,
-    title_fontSize: 80,  
-    subtitle_fontSize: 50,  
-    footer_fontSize: 30  
-  };  
+  const generateImage = async (title, description, userAvatar, subtitle) => { 
+    const bg = 'https://i.ibb.co/cFzgdNw/file.jpg';  // Cambié la URL a una válida
+    const footer = `Eres el miembro ${participants.length}`;  // Cambio de pie de foto a un valor estático de prueba
+    const color = '#ffffff';    
+    const options = {    
+      font: "sans-serif",    
+      attachmentName: `welcome-${who}`,
+      title_fontSize: 80,  
+      subtitle_fontSize: 50,  
+      footer_fontSize: 30  
+    };  
 
-  return await welcomeImage(bg, userAvatar, title, subtitle, footer, color, options);  
-};
+    return await welcomeImage(bg, userAvatar, title, subtitle, footer, color, options);  
+  };
 
   if (chat.welcome && m.messageStubType == 27) {  
     let bienvenida = `❀ *Se unió* al grupo *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]} \n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Bienvenido! ¡Esperamos que tengas un excelente día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 ¡Disfruta de tu tiempo con nosotros!`;  
@@ -61,7 +61,7 @@ const generateImage = async (title, description, userAvatar, subtitle) => {
 
     let userAvatar = await getUserAvatar();
     let subtitle = member ? `@${who.split('@')[0]}` : 'Usuario expulsado';
-    let img = await generateImage('EXPULSADO', '¡fue expulsado del grupo.!', userAvatar, subtitle);  
+    let img = await generateImage('EXPULSADO', '¡fue expulsado del grupo!', userAvatar, subtitle);  
 
     await conn.sendMini(m.chat, botname, dev, kick, img, img, web, null);  
   }  
