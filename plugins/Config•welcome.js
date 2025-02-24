@@ -22,10 +22,10 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
   const generateImage = async (title, description) => { 
   const bg = 'https://imgur.com/okIR1iY.png';    
-  const avatar = member.user.displayAvatarURL({ format: "png" });    
+  const avatar = (userAvatar);    
   const title = "welcome";    
   const subtitle = member.user.tag;    
-  const footer = `You're the ${member.guild.memberCount}th member`;    
+  const footer = `You're the th member`;    
   const color = '#ffffff';    
   const channel = member.guild.channels.cache.get('716220553391767569')    
   const options = {    
