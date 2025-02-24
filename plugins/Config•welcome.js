@@ -20,24 +20,23 @@ export async function before(m, { conn, participants, groupMetadata }) {
     }  
   };  
 
-  const generateImage = async (title, description) => { 
+const generateImage = async (title, description) => { 
   const bg = 'https://imgur.com/okIR1iY.png';    
-  const avatar = (userAvatar);    
-  const title = "welcome";    
+  const avatar = userAvatar;    
   const subtitle = member.user.tag;    
   const footer = `You're the th member`;    
   const color = '#ffffff';    
-  const channel = member.guild.channels.cache.get('716220553391767569')    
+  const channel = member.guild.channels.cache.get('716220553391767569');    
   const options = {    
     font: "sans-serif",    
     attachmentName: `welcome-${member.id}`,
-      title_fontSize: 80,  
-      subtitle_fontSize: 50,  
-      footer_fontSize: 30  
-    };  
-
-    return await welcomeImage(bg, userAvatar, title, subtitle, footer, color, options);  
+    title_fontSize: 80,  
+    subtitle_fontSize: 50,  
+    footer_fontSize: 30  
   };  
+
+  return await welcomeImage(bg, userAvatar, title, subtitle, footer, color, options);  
+};
 
   if (chat.welcome && m.messageStubType == 27) {  
     let bienvenida = `❀ *Se unió* al grupo *${groupMetadata.subject.trim()}*\n    ✰ @${m.messageStubParameters[0].split`@`[0]} \n\n    Ꮚ⁠˘⁠ ⁠ꈊ⁠ ⁠˘⁠ ⁠Ꮚ ¡Bienvenido! ¡Esperamos que tengas un excelente día!\n\n> ✐ No olvides usar *#help* si necesitas algo.\n> 🜸 ¡Disfruta de tu tiempo con nosotros!`;  
@@ -62,4 +61,4 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     await conn.sendAi(m.chat, botname, dev, kick, img, img, web, null);  
   }  
-}
+} 
