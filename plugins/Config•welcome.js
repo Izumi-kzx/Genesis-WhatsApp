@@ -20,14 +20,11 @@ export async function before(m, { conn, participants, groupMetadata }) {
     }
   };
 
-  const generateImage = async (title, description) => {
+  const generateImage = async (title, description, backgroundImage) => {
     const userAvatar = await getUserAvatar();
     const img = await new canvafy.WelcomeLeave()
       .setAvatar(userAvatar)
-      .setBackground(
-        'image',
-        'https://i.ibb.co/WNL4wZ1L/file.jpg'
-      )
+      .setBackground('image', backgroundImage)
       .setTitle(title)
       .setDescription(description)
       .setBorder('#2a2e35')
@@ -50,7 +47,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       '¡BIENVENIDO/A!',
-      `Disfruta de tu estadía. Ahora somos ${groupSize} miembros.`
+      `Disfruta de tu estadía. Ahora somos ${groupSize} miembros.`,
+      'https://i.ibb.co/1fVJfvxk/file.jpg'
     );
 
     await conn.sendMini(m.chat, botname, dev, bienvenida, img, img, web, null);
@@ -61,7 +59,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       '¡HASTA LUEGO!',
-      `Nos vemos pronto. Ahora somos ${groupSize} miembros.`
+      `Nos vemos pronto. Ahora somos ${groupSize} miembros.`,
+      'https://i.ibb.co/Kcf0xdrQ/file.jpg'
     );
 
     await conn.sendMini(m.chat, botname, dev, bye, img, img, webb, null);
@@ -72,7 +71,8 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       '¡HASTA LUEGO!',
-      `Nos vemos pronto. Ahora somos ${groupSize} miembros.`
+      `Nos vemos pronto. Ahora somos ${groupSize} miembros.`,
+      'https://i.ibb.co/Kcf0xdrQ/file.jpg'
     );
 
     await conn.sendMini(m.chat, botname, dev, kick, img, img, web, null);
