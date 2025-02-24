@@ -1,5 +1,3 @@
-Claro, aquí tienes el código sin los comentarios (//):
-
 import { WAMessageStubType } from '@whiskeysockets/baileys';
 import fetch from 'node-fetch';
 import canvafy from 'canvafy';
