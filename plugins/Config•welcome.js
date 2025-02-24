@@ -46,7 +46,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hola Bienvenido al grupo!`
     );
 
-    await conn.sendAi(m.chat, botname, dev, bienvenida, img, img, web, null);
+    await conn.sendMini(m.chat, botname, dev, bienvenida, img, img, web, null);
   }
 
   if (chat.welcome && m.messageStubType == 28) {
@@ -57,7 +57,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡Hasta pronto Usuario!`
     );
 
-    await conn.sendAi(m.chat, botname, dev, bye, img, img, webb, null);
+    await conn.sendMini(m.chat, botname, dev, bye, img, img, webb, null);
   }
 
   if (chat.welcome && m.messageStubType == 32) {
@@ -68,6 +68,6 @@ export async function before(m, { conn, participants, groupMetadata }) {
       `¡fue expulsado del grupo.!`
     );
 
-    await conn.sendAi(m.chat, botname, dev, kick, img, img, web, null);
+    await conn.sendMini(m.chat, botname, dev, kick, img, img, web, null);
   }
 }
