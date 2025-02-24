@@ -53,7 +53,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       '¡BIENVENIDO!',
-      `¡Hola! Bienvenido al grupo, ahora somos ${groupSize} miembros.`
+      `¡Hola! Bienvenido al grupo.\nahora somos ${groupSize} miembros.`
     );
 
     await conn.sendMini(m.chat, botname, dev, bienvenida, img, img, web, null);
@@ -64,7 +64,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       '¡ADIOS!',
-      `¡Hasta pronto! Ahora el grupo tiene ${groupSize} miembros.`
+      `¡Hasta pronto!\nAhora el grupo tiene ${groupSize} miembros.`
     );
 
     await conn.sendMini(m.chat, botname, dev, bye, img, img, webb, null);
@@ -75,7 +75,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
 
     let img = await generateImage(
       'EXPULSADO',
-      `¡fue expulsado! Ahora somos ${groupSize} miembros en el grupo.`
+      `¡fue expulsado!\nAhora somos ${groupSize} miembros.`
     );
 
     await conn.sendMini(m.chat, botname, dev, kick, img, img, web, null);
