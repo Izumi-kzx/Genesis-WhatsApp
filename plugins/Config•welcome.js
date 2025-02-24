@@ -43,7 +43,7 @@ const generateImage = async (title, description, userAvatar, subtitle) => {
     let subtitle = member ? `@${who.split('@')[0]}` : 'Nuevo usuario';
     let img = await generateImage('¡BIENVENIDO!', '¡Hola Bienvenido al grupo!', userAvatar, subtitle);  
 
-    await conn.sendAi(m.chat, botname, dev, bienvenida, img, img, web, null);  
+    await conn.sendMin(m.chat, botname, dev, bienvenida, img, img, web, null);  
   }  
 
   if (chat.welcome && m.messageStubType == 28) {  
@@ -53,7 +53,7 @@ const generateImage = async (title, description, userAvatar, subtitle) => {
     let subtitle = member ? `@${who.split('@')[0]}` : 'Usuario saliente';
     let img = await generateImage('¡ADIOS!', '¡Hasta pronto Usuario!', userAvatar, subtitle);  
 
-    await conn.sendAi(m.chat, botname, dev, bye, img, img, webb, null);  
+    await conn.sendMini(m.chat, botname, dev, bye, img, img, webb, null);  
   }  
 
   if (chat.welcome && m.messageStubType == 32) {  
@@ -63,6 +63,6 @@ const generateImage = async (title, description, userAvatar, subtitle) => {
     let subtitle = member ? `@${who.split('@')[0]}` : 'Usuario expulsado';
     let img = await generateImage('EXPULSADO', '¡fue expulsado del grupo.!', userAvatar, subtitle);  
 
-    await conn.sendAi(m.chat, botname, dev, kick, img, img, web, null);  
+    await conn.sendMini(m.chat, botname, dev, kick, img, img, web, null);  
   }  
 }
