@@ -22,7 +22,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
   };  
 
   const generateImage = async (title, description, userAvatar, subtitle) => { 
-    const bg = 'https://i.ibb.co/cFzgdNw/file.jpg';  // Cambié la URL a una válida
+    const bg = 'https://i.ibb.co/WNL4wZ1L/file.jpg';  // Cambié la URL a una válida
     const footer = `Eres el miembro ${participants.length}`;  // Cambio de pie de foto a un valor estático de prueba
     const color = '#ffffff';    
     const options = {    
