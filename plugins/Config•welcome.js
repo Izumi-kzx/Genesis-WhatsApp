@@ -80,6 +80,3 @@ export async function before(m, { conn, participants, groupMetadata }) {
     await conn.sendMini(m.chat, botname, dev, kick, img, img, web, null);
   }
 }
-
-He quitado todos los comentarios en el código. Ahora está limpio y solo con la lógica que implementa la funcionalidad que necesitas.
-
