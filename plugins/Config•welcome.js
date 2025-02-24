@@ -43,7 +43,7 @@ const generateImage = async (title, description, userAvatar, subtitle) => {
     let subtitle = member ? `@${who.split('@')[0]}` : 'Nuevo usuario';
     let img = await generateImage('¡BIENVENIDO!', '¡Hola Bienvenido al grupo!', userAvatar, subtitle);  
 
-    await conn.sendMin(m.chat, botname, dev, bienvenida, img, img, web, null);  
+    await conn.sendMini(m.chat, botname, dev, bienvenida, img, img, web, null);  
   }  
 
   if (chat.welcome && m.messageStubType == 28) {  
