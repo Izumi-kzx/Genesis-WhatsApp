@@ -32,7 +32,7 @@ export async function before(m, { conn, participants, groupMetadata }) {
       .setDescription(description)
       .setBorder('#2a2e35')
       .setAvatarBorder('#2a2e35')
-      .setOverlayOpacity(0.0)
+      .setOverlayOpacity(0.1)
       .build();
 
     return img;
