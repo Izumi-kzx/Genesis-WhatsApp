@@ -66,7 +66,3 @@ const generateImage = async (title, description, userAvatar, subtitle) => {
     await conn.sendAi(m.chat, botname, dev, kick, img, img, web, null);  
   }  
 }
-
-
-He corregido el código para definir member y asegurarme de que subtitle se pase correctamente a generateImage. Ahora no deberías recibir el error de parámetro faltante. Pruébalo y dime si hay algún otro problema.
-
