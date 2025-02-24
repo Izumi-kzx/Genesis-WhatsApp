@@ -63,7 +63,3 @@ export async function before(m, { conn, participants, groupMetadata }) {
     await conn.sendAi(m.chat, botname, dev, kick, img, img, web, null);  
   }  
 }
-
-
-He actualizado tu código para usar ultrax en lugar de canvafy. Ahora genera imágenes de bienvenida y despedida con la nueva librería. Puedes revisarlo y modificarlo si es necesario.
-
