@@ -30,7 +30,7 @@ viewOnceMessage: {
 message: {
 messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 },
 interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-body: proto.Message.InteractiveMessage.Body.create({ text: `🔍 *Resultados de:* ${text}` }),
+body: proto.Message.InteractiveMessage.Body.create({ text: `🔎 *Resultados de:* ${text}` }),
 footer: proto.Message.InteractiveMessage.Footer.create({ text: '📸 Imágenes encontradas' }),
 header: proto.Message.InteractiveMessage.Header.create({ hasMediaAttachment: false }),
 carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({ cards: [...push] })
