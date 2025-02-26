@@ -1,153 +1,88 @@
-import yts from 'yt-search';
 import fetch from 'node-fetch';
-import { prepareWAMessageMedia, generateWAMessageFromContent } from '@whiskeysockets/baileys';
+const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default;
 
-const handler = async (m, { conn, args, usedPrefix }) => {
-    if (!args[0]) return conn.reply(m.chat, '*`Por favor ingresa un término de búsqueda`*', m);
-
+let handler = async (m, { conn, text }) => {
+    if (!text) return m.reply('Ingresa el texto de lo que quieres buscar en imágenes 🔍');
     await m.react('🕓');
+
     try {
-        let searchResults = await searchVideos(args.join(" "));
-        let spotifyResults = await searchSpotify(args.join(" "));
-        let appleMusicResults = await searchAppleMusic(args.join(" "));
+        async function createImage(url) {
+            const { imageMessage } = await generateWAMessageContent(
+                { image: { url } },
+                { upload: conn.waUploadToServer }
+            );
+            return imageMessage;
+        }
 
-        if (!searchResults.length && !spotifyResults.length && !appleMusicResults.length) throw new Error('No se encontraron resultados.');
+        let push = [];
+        let api = await fetch(`https://delirius-apiofc.vercel.app/search/bingimage?query=${encodeURIComponent(text)}`);
+        let json = await api.json();
 
-        let video = searchResults[0];
-        let thumbnail = await (await fetch(video.miniatura)).buffer();
+        if (!json.results || json.results.length === 0) {
+            return m.reply('No se encontraron imágenes para tu búsqueda.');
+        }
 
-        let messageText = `Y O U T U B E _ P L A Y\n\n`;
-        messageText += `• *Título:* ${video.titulo}\n`;
-        messageText += `• *Duración:* ${video.duracion || 'No disponible'}\n`;
-        messageText += `• *Autor:* ${video.canal || 'Desconocido'}\n`;
-        messageText += `• *Publicado:* ${convertTimeToSpanish(video.publicado)}\n`;
-        messageText += `• *Enlace:* ${video.url}\n`;
+        for (let item of json.results.slice(0, 5)) { // Tomamos las 5 primeras imágenes
+            let image = await createImage(item.direct);
 
-        let ytSections = searchResults.slice(1, 11).map((v, index) => ({
-            title: `${index + 1}┃ ${v.titulo}`,
-            rows: [
-                {
-                    title: `🎶 Descargar MP3`,
-                    description: `Duración: ${v.duracion || 'No disponible'}`, 
-                    id: `${usedPrefix}ytmp3 ${v.url}`
-                },
-                {
-                    title: `🎥 Descargar MP4`,
-                    description: `Duración: ${v.duracion || 'No disponible'}`, 
-                    id: `${usedPrefix}ytmp4 ${v.url}`
+            push.push({
+                body: proto.Message.InteractiveMessage.Body.fromObject({
+                    text: `◦ *Título:* ${item.title || 'Sin título'} \n◦ *Fuente:* [Ver en la web](${item.source})`
+                }),
+                footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: '' }),
+                header: proto.Message.InteractiveMessage.Header.fromObject({
+                    title: '',
+                    hasMediaAttachment: true,
+                    imageMessage: image
+                }),
+                nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+                    buttons: [
+                        {
+                            "name": "cta_copy",
+                            "buttonParamsJson": `{"display_text":"🌐 Ver Imagen","id":"view_image","copy_code":"${item.direct}"}`
+                        }
+                    ]
+                })
+            });
+        }
+
+        const msg = generateWAMessageFromContent(
+            m.chat,
+            {
+                viewOnceMessage: {
+                    message: {
+                        messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 },
+                        interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+                            body: proto.Message.InteractiveMessage.Body.create({
+                                text: `🔎 *Resultados de:* ${text}`
+                            }),
+                            footer: proto.Message.InteractiveMessage.Footer.create({
+                                text: '📸 Imágenes encontradas'
+                            }),
+                            header: proto.Message.InteractiveMessage.Header.create({
+                                hasMediaAttachment: false
+                            }),
+                            carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+                                cards: [...push]
+                            })
+                        })
+                    }
                 }
-            ]
-        }));
-
-        let spotifySections = spotifyResults.slice(0, 10).map((s, index) => ({
-            title: `${index + 1}┃ ${s.titulo}`,
-            rows: [
-                {
-                    title: `🎶 Descargar Audio`,
-                    description: `Duración: ${s.duracion || 'No disponible'}`, 
-                    id: `${usedPrefix}spotify ${s.url}`
-                }
-            ]
-        }));
-
-        let appleMusicSections = appleMusicResults.slice(0, 10).map((a, index) => ({
-            title: `${index + 1}┃ ${a.titulo}`,
-            rows: [
-                {
-                    title: `🎶 Descargar Audio`,
-                    description: `Duración: No disponible`, 
-                    id: `${usedPrefix}applemusic ${a.url}`
-                }
-            ]
-        }));
-
-        await conn.sendMessage(m.chat, {
-            image: thumbnail,
-            caption: messageText,
-            footer: 'Presiona el botón para el tipo de descarga.',
-            contextInfo: {
-                mentionedJid: [m.sender],
-                forwardingScore: 999,
-                isForwarded: true
             },
-            buttons: [
-                {
-                    buttonId: `${usedPrefix}ytmp3 ${video.url}`,
-                    buttonText: { displayText: 'ᯓᡣ𐭩 ᥲᥙძі᥆' },
-                    type: 1,
-                },
-                {
-                    buttonId: `${usedPrefix}ytmp4 ${video.url}`,
-                    buttonText: { displayText: 'ᯓᡣ𐭩 ᥎іძᥱ᥆' },
-                    type: 1,
-                },
-                {
-                    type: 4,
-                    nativeFlowInfo: {
-                        name: 'single_select',
-                        paramsJson: JSON.stringify({
-                            title: '⊹₊ ⋆ᯓᡣ𐭩 rᥱsᥙᥣ𝗍ᥲძ᥆s ᥡ᥆ᥙ𝗍ᥙᑲᥱ',
-                            sections: ytSections,
-                        }),
-                    },
-                },
-                {
-                    type: 4,
-                    nativeFlowInfo: {
-                        name: 'single_select',
-                        paramsJson: JSON.stringify({
-                            title: '⊹₊ ⋆ᯓᡣ𐭩 rᥱsᥙᥣ𝗍ᥲძ᥆s s⍴᥆𝗍і𝖿ᥡ',
-                            sections: spotifySections,
-                        }),
-                    },
-                },
-                {
-                    type: 4,
-                    nativeFlowInfo: {
-                        name: 'single_select',
-                        paramsJson: JSON.stringify({
-                            title: '⊹₊ ⋆ᯓᡣ𐭩 rᥱsᥙᥣ𝗍ᥲძ᥆s ᥲ⍴⍴ᥣᥱ ᥆ᥙsі𝖼',
-                            sections: appleMusicSections,
-                        }),
-                    },
-                },
-            ],
-            headerType: 1,
-            viewOnce: true
-        }, { quoted: m });
+            { quoted: m }
+        );
 
         await m.react('✅');
-    } catch (e) {
-        console.error(e);
-        await m.react('✖️');
-        conn.reply(m.chat, '*`Error al buscar el video.`*', m);
+        await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
+
+    } catch (error) {
+        console.error(error);
+        m.reply('Ocurrió un error al buscar las imágenes. Inténtalo de nuevo.');
     }
 };
 
-handler.help = ['play *<texto>*'];
-handler.tags = ['dl'];
-handler.command = ['playyt'];
+handler.help = ["bingsearch <texto>"];
+handler.tags = ["search"];
+handler.command = /^(bingsearch)$/i;
+
 export default handler;
-
-async function searchAppleMusic(query) {
-    try {
-        const res = await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music`);
-        const data = await res.json();
-        return data.results.slice(0, 10).map(track => ({
-            titulo: track.trackName,
-            url: track.trackViewUrl,
-        }));
-    } catch (error) {
-        console.error('Error en Apple Music API:', error.message);
-        return [];
-    }
-}
-
-function convertTimeToSpanish(timeText) {
-    return timeText
-        .replace(/year/, 'año').replace(/years/, 'años')
-        .replace(/month/, 'mes').replace(/months/, 'meses')
-        .replace(/day/, 'día').replace(/days/, 'días')
-        .replace(/hour/, 'hora').replace(/hours/, 'horas')
-        .replace(/minute/, 'minuto').replace(/minutes/, 'minutos');
-}
