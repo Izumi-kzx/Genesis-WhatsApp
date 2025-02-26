@@ -1,57 +1,49 @@
 import fetch from 'node-fetch';
-const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default;
+import { proto, generateWAMessageFromContent, prepareWAMessageMedia } from '@whiskeysockets/baileys';
 
-let handler = async (m, { conn, text }) => {
+let handler = async (m, { conn, text, command }) => {
     if (!text) return m.reply('Ingresa el texto de lo que quieres buscar en Bing 🖼️');
     await m.react('🕓');
 
     try {
-        async function createImage(url) {
-            const { imageMessage } = await generateWAMessageContent(
-                { image: { url } },
-                { upload: conn.waUploadToServer }
-            );
-            return imageMessage;
-        }
-
-        let push = [];
         let api = await fetch(`https://delirius-apiofc.vercel.app/search/bingimage?query=${encodeURIComponent(text)}`);
         let json = await api.json();
+        let results = [];
 
         for (let img of json.results) {
-            let image = await createImage(img.direct);
+            let media = await prepareWAMessageMedia({ image: { url: img.direct } }, { upload: conn.waUploadToServer });
 
-            push.push({
-                body: proto.Message.InteractiveMessage.Body.fromObject({
-                    text: `🔍 *Título:* ${img.title}\n🌐 *Fuente:* ${img.source}`
-                }),
-                footer: proto.Message.InteractiveMessage.Footer.fromObject({
-                    text: ''
-                }),
+            results.push({
+                body: proto.Message.InteractiveMessage.Body.fromObject({ text: null }),
+                footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: '*[ GenesisBot By Angel-OFC ]*' }),
                 header: proto.Message.InteractiveMessage.Header.fromObject({
-                    title: '',
+                    title: `🔍 Imagen de: ${text}`,
                     hasMediaAttachment: true,
-                    imageMessage: image
-                })
+                    imageMessage: media.imageMessage
+                }),
+                nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({ buttons: [] })
             });
         }
 
-        const msg = generateWAMessageFromContent(m.chat, {
+        const messageContent = generateWAMessageFromContent(m.chat, {
             viewOnceMessage: {
                 message: {
-                    messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 },
+                    messageContextInfo: {
+                        deviceListMetadata: {},
+                        deviceListMetadataVersion: 2
+                    },
                     interactiveMessage: proto.Message.InteractiveMessage.fromObject({
                         body: proto.Message.InteractiveMessage.Body.create({
                             text: `📸 *Resultados de:* ${text}`
                         }),
                         footer: proto.Message.InteractiveMessage.Footer.create({
-                            text: '🔎 Imágenes obtenidas desde Bing'
+                            text: '_`ᴀ` `ɴ` `ɪ` `ᴍ` `ᴇ` - `2` `0` `2` `4`_'
                         }),
                         header: proto.Message.InteractiveMessage.Header.create({
                             hasMediaAttachment: false
                         }),
                         carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
-                            cards: [...push]
+                            cards: results
                         })
                     })
                 }
@@ -59,7 +51,7 @@ let handler = async (m, { conn, text }) => {
         }, { quoted: m });
 
         await m.react('✅');
-        await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
+        await conn.relayMessage(m.chat, messageContent.message, { messageId: messageContent.key.id });
 
     } catch (error) {
         console.error(error);
