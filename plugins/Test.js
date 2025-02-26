@@ -22,7 +22,7 @@ let handler = async (m, { conn, text }) => {
             return m.reply('No se encontraron imágenes para tu búsqueda.');
         }
 
-        for (let item of json.results.slice(0, 5)) { // Tomamos las 5 primeras imágenes
+        for (let item of json.results.slice(0, 9)) { // Tomamos las 5 primeras imágenes
             let image = await createImage(item.direct);
 
             push.push({
