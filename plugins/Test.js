@@ -2,7 +2,7 @@ import fetch from 'node-fetch'
 const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default
 
 let handler = async (m, { conn, text }) => {
-if (!text) return conn.reply(m.chat, '🥞 Ingresa el texto de lo que quieres buscar en imágenes.', m)
+if (!text) return conn.reply(m.chat, '🥞 Ingresa el texto de lo que quieres buscar en pixaiart.', m)
 try {
 let api = await fetch(`https://delirius-apiofc.vercel.app/search/pixaiart?query=${encodeURIComponent(text)}`)
 let json = await api.json()
@@ -24,7 +24,7 @@ nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject
 })
 }
 
-const msg = generateWAMessageFromContent(m.chat, { viewOnceMessage: { message: { messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 }, interactiveMessage: proto.Message.InteractiveMessage.fromObject({ body: proto.Message.InteractiveMessage.Body.create({ text: `🔎 *Resultados de:* ${text}` }), footer: proto.Message.InteractiveMessage.Footer.create({ text: '📸 Imágenes encontradas' }), header: proto.Message.InteractiveMessage.Header.create({ hasMediaAttachment: false }), carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({ cards: [...push] }) }) } } }, { quoted: m })
+const msg = generateWAMessageFromContent(m.chat, { viewOnceMessage: { message: { messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 }, interactiveMessage: proto.Message.InteractiveMessage.fromObject({ body: proto.Message.InteractiveMessage.Body.create({ text: `🔎 *Resultados de:* ${text}` }), footer: proto.Message.InteractiveMessage.Footer.create({ text: '🥞 Imágenes pixaiart' }), header: proto.Message.InteractiveMessage.Header.create({ hasMediaAttachment: false }), carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({ cards: [...push] }) }) } } }, { quoted: m })
 
 await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id })
 } catch {}
