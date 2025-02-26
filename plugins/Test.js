@@ -27,7 +27,7 @@ let handler = async (m, { conn, text }) => {
 
             push.push({
                 body: proto.Message.InteractiveMessage.Body.fromObject({
-                    text: `◦ *Título:* ${item.title || 'Sin título'} \n◦ *Fuente:* [Ver en la web](${item.source})`
+                    text: `◦ *Título:* ${item.title || 'Sin título'}`
                 }),
                 footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: '' }),
                 header: proto.Message.InteractiveMessage.Header.fromObject({
@@ -39,7 +39,7 @@ let handler = async (m, { conn, text }) => {
                     buttons: [
                         {
                             "name": "cta_url",
-                            "buttonParamsJson": `{"display_text":"🌐 Ver Imagen","url":"${item.direct}"}`
+                            "buttonParamsJson": `{"display_text":"🌐 Ver Fuente","url":"${item.source}"}`
                         }
                     ]
                 })
