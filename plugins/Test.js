@@ -1,5 +1,6 @@
 /* 
 - Código Creado Por Izumi-kzx
+- Código Auténtico Por Code Titans
 - Power By Team Code Titans
 - https://whatsapp.com/channel/0029ValMlRS6buMFL9d0iQ0S
 */
