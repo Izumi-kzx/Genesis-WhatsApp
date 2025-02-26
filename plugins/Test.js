@@ -14,7 +14,7 @@ return imageMessage
 }
 
 let push = []
-for (let item of json.data.slice(0, 5)) {
+for (let item of json.data.slice(0, 9)) {
 let image = await createImage(item.image)
 push.push({
 body: proto.Message.InteractiveMessage.Body.fromObject({ text: `◦ *Título:* ${item.title || 'Sin título'}\n◦ *Autor:* ${item.name}` }),
