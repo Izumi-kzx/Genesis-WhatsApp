@@ -1,61 +1,83 @@
 import fetch from 'node-fetch';
-import { proto, generateWAMessageFromContent, prepareWAMessageMedia } from '@whiskeysockets/baileys';
+const { generateWAMessageContent, generateWAMessageFromContent, proto } = (await import('@whiskeysockets/baileys')).default;
 
-let handler = async (m, { conn, text, command }) => {
-    if (!text) return m.reply('Ingresa el texto de lo que quieres buscar en Bing 🖼️');
+let handler = async (m, { conn, text }) => {
+    if (!text) return m.reply('Ingresa el texto de lo que quieres buscar en imágenes 🔍');
     await m.react('🕓');
 
     try {
+        async function createImage(url) {
+            const { imageMessage } = await generateWAMessageContent(
+                { image: { url } },
+                { upload: conn.waUploadToServer }
+            );
+            return imageMessage;
+        }
+
+        let push = [];
         let api = await fetch(`https://delirius-apiofc.vercel.app/search/bingimage?query=${encodeURIComponent(text)}`);
         let json = await api.json();
-        let results = [];
 
-        for (let img of json.results) {
-            let media = await prepareWAMessageMedia({ image: { url: img.direct } }, { upload: conn.waUploadToServer });
+        if (!json.results || json.results.length === 0) {
+            return m.reply('No se encontraron imágenes para tu búsqueda.');
+        }
 
-            results.push({
-                body: proto.Message.InteractiveMessage.Body.fromObject({ text: null }),
-                footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: '*[ GenesisBot By Angel-OFC ]*' }),
-                header: proto.Message.InteractiveMessage.Header.fromObject({
-                    title: `🔍 Imagen de: ${text}`,
-                    hasMediaAttachment: true,
-                    imageMessage: media.imageMessage
+        for (let item of json.results.slice(0, 5)) { // Tomamos las 5 primeras imágenes
+            let image = await createImage(item.direct);
+
+            push.push({
+                body: proto.Message.InteractiveMessage.Body.fromObject({
+                    text: `◦ *Título:* ${item.title || 'Sin título'} \n◦ *Fuente:* [Ver en la web](${item.source})`
                 }),
-                nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({ buttons: [] })
+                footer: proto.Message.InteractiveMessage.Footer.fromObject({ text: '' }),
+                header: proto.Message.InteractiveMessage.Header.fromObject({
+                    title: '',
+                    hasMediaAttachment: true,
+                    imageMessage: image
+                }),
+                nativeFlowMessage: proto.Message.InteractiveMessage.NativeFlowMessage.fromObject({
+                    buttons: [
+                        {
+                            "name": "cta_url",
+                            "buttonParamsJson": `{"display_text":"🌐 Ver Imagen","url":"${item.direct}"}`
+                        }
+                    ]
+                })
             });
         }
 
-        const messageContent = generateWAMessageFromContent(m.chat, {
-            viewOnceMessage: {
-                message: {
-                    messageContextInfo: {
-                        deviceListMetadata: {},
-                        deviceListMetadataVersion: 2
-                    },
-                    interactiveMessage: proto.Message.InteractiveMessage.fromObject({
-                        body: proto.Message.InteractiveMessage.Body.create({
-                            text: `📸 *Resultados de:* ${text}`
-                        }),
-                        footer: proto.Message.InteractiveMessage.Footer.create({
-                            text: '_`ᴀ` `ɴ` `ɪ` `ᴍ` `ᴇ` - `2` `0` `2` `4`_'
-                        }),
-                        header: proto.Message.InteractiveMessage.Header.create({
-                            hasMediaAttachment: false
-                        }),
-                        carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
-                            cards: results
+        const msg = generateWAMessageFromContent(
+            m.chat,
+            {
+                viewOnceMessage: {
+                    message: {
+                        messageContextInfo: { deviceListMetadata: {}, deviceListMetadataVersion: 2 },
+                        interactiveMessage: proto.Message.InteractiveMessage.fromObject({
+                            body: proto.Message.InteractiveMessage.Body.create({
+                                text: `🔎 *Resultados de:* ${text}`
+                            }),
+                            footer: proto.Message.InteractiveMessage.Footer.create({
+                                text: '📸 Imágenes encontradas'
+                            }),
+                            header: proto.Message.InteractiveMessage.Header.create({
+                                hasMediaAttachment: false
+                            }),
+                            carouselMessage: proto.Message.InteractiveMessage.CarouselMessage.fromObject({
+                                cards: [...push]
+                            })
                         })
-                    })
+                    }
                 }
-            }
-        }, { quoted: m });
+            },
+            { quoted: m }
+        );
 
         await m.react('✅');
-        await conn.relayMessage(m.chat, messageContent.message, { messageId: messageContent.key.id });
+        await conn.relayMessage(m.chat, msg.message, { messageId: msg.key.id });
 
     } catch (error) {
         console.error(error);
-        m.reply('Ocurrió un error al buscar imágenes. Intenta de nuevo.');
+        m.reply('Ocurrió un error al buscar las imágenes. Inténtalo de nuevo.');
     }
 };
 
